@@ -94,6 +94,6 @@ if [[ `uname -a`  =~ Darwin ]]; then
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
     fi
-    cp `pwd`/bashrc ~/.bash_profileh
+    cp `pwd`/bashrc ~/.bash_profile
 fi
 echo "Done..."
