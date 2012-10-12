@@ -36,6 +36,13 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         rm -rf ~/.vimrc
     fi 
     cp `pwd`/vimrc ~/.vimrc
+
+    if [ -e `pwd`/aliases-private ]; then
+        if [ -e ~/.aliases-private ]; then
+            rm -rf ~/.aliases-private
+        fi
+    fi
+    cp `pwd`/aliases-private ~/.aliases-private
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
@@ -44,7 +51,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
     fi
-    cp `pwd`/bashrc ~/.bash_profileh
+    cp `pwd`/bashrc ~/.bashrc
     
     if [ -e /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf ]; then
         sudo rm -rf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf  
