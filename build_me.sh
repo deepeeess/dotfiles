@@ -43,6 +43,14 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/aliases-private ~/.aliases-private
+    
+    if [ -e `pwd`/ircrc ]; then
+        if [ -e ~/.ircrc ]; then
+            rm -rf ~/.ircrc
+        fi
+    fi
+    cp `pwd`/ircrc ~/.ircrc
+
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
