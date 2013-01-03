@@ -21,6 +21,11 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         rm -rf ~/.functions
     fi
     cp `pwd`/functions ~/.functions
+    
+    if [ -e ~/.functions-private ]; then
+        rm -rf ~/.functions-private
+    fi
+    cp `pwd`/functions-private ~/.functions-private
 
     if [ -e ~/.offlineimaprc ]; then
         rm -rf ~/.offlineimaprc
@@ -50,19 +55,39 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/ircrc ~/.ircrc
+    
+    if [ -e `pwd`/mailcap ]; then
+        if [ -e ~/.mailcap ]; then
+            rm -rf ~/.mailcap
+        fi
+    fi
+    cp `pwd`/mailcap ~/.mailcap
+    
+    if [ -e `pwd`/muttrc ]; then
+        if [ -e ~/.muttrc ]; then
+            rm -rf ~/.muttrc
+        fi
+    fi
+    cp `pwd`/muttrc ~/.muttrc
 
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
-    echo "Doing Arch Only Configuration"
+    echo "Doing Arch Only Configuration."
 
+    if [ -e ~/.mcabberrc ]; then
+        rm -rf ~/.mcabberrc
+    fi
+    cp `pwd`/mcabberrc ~/.mcabberrc
+    
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
     fi
     cp `pwd`/bashrc ~/.bashrc
+    source ~/.bashrc
     
     if [ -e /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf ]; then
-        sudo rm -rf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf  
+        sudo rm -rf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf
     fi
     sudo cp `pwd`/90-graphics-hypervisor.conf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf 
 
@@ -72,9 +97,26 @@ if [[ `uname -a`  =~ ARCH ]]; then
     fi
     cp `pwd`/xmonad.hs  ~/.xmonad/xmonad.hs 
 
+    if [ -e `pwd`/xmobarrc ]; then
+        if [ -e ~/.xmobarrc ]; then
+            rm -rf ~/.xmobarrc
+        fi
+    fi
+    cp `pwd`/xmobarrc ~/.xmobarrc
+    
     if [ -e /usr/bin/xmonad ]; then
-        xmonad --recompile
-    fi    
+        echo "Recompiling and restarting xmonad..."
+        #This appears to restart xmobar as well, the pid of xmobar changes.
+        #It didn't used to do this.
+        xmonad --recompile; xmonad --restart;
+        #echo pgrep xmobar: `pgrep xmobar`
+        #echo count:  `pgrep xmobar | wc`
+        #for pid in `pgrep xmobar`; do
+        #    echo pid: $pid
+        #done
+        #echo "Starting xmobar..."
+        #xmobar &
+    fi
 
     if [ -e ~/.Xdefaults ]; then
         rm -rf ~/.Xdefaults
@@ -85,6 +127,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
         rm -rf ~/.Xresources
     fi
     cp `pwd`/Xresources ~/.Xresources
+    xrdb -load ~/.Xresources
 
     if [ -e ~/.xinitrc ]; then
         rm -rf ~/.xinitrc
@@ -95,12 +138,24 @@ if [[ `uname -a`  =~ ARCH ]]; then
         sudo rm -rf /etc/syslog-ng/syslog-ng.conf
     fi
     sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
+    
+    if [ -e /etc/syslog-ng/syslog-ng-private.conf ]; then
+        sudo rm -rf /etc/syslog-ng/syslog-ng-private.conf
+    fi
+    sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng-private.conf
 
     if [ -e /etc/iptables/iptables.rules ]; then
         echo "/etc/iptables/iptables.rules already exists, not over-writing."
     else 
         sudo cp `pwd`/iptables.rules /etc/iptables/iptables.rules
     fi
+    
+    if [ -e `pwd`/hosts ]; then
+        if [ -e /etc/hosts ]; then
+            sudo rm -rf /etc/hosts 
+        fi
+    fi
+    sudo cp `pwd`/hosts /etc/hosts
 fi
 
 if [[ `uname -a`  =~ Darwin ]]; then
@@ -110,5 +165,11 @@ if [[ `uname -a`  =~ Darwin ]]; then
         rm -rf ~/.bashrc
     fi
     cp `pwd`/bashrc ~/.bash_profile
+    source ~/.bash_profile
+
+    if [ -e ~/.inputrc ]; then
+        rm -rf ~/.inputrc
+    fi
+    cp `pwd`/inputrc ~/.inputrc
 fi
 echo "Done..."
