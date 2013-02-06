@@ -32,6 +32,12 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi 
     cp `pwd`/offlineimaprc ~/.offlineimaprc
 
+    if [ -e ~/imapfilter.conf ]; then
+        rm -rf ~/.imapfilter
+    fi
+    mkdir -p ~/.imapfilter/
+    cp `pwd`/imapfilter.conf ~/.imapfilter/config.lua
+
     if [ -e ~/.screenrc ]; then
     rm -rf ~/.screenrc
     fi 
@@ -69,7 +75,34 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/muttrc ~/.muttrc
+    
+    if [ -e `pwd`/fstab-private ]; then
+        if [ -e /etc/fstab-private ]; then
+            sudo rm -rf /etc/fstab
+        fi
+    fi
+    sudo cp `pwd`/fstab-private /etc/fstab
 
+    if [ -e `pwd`/pinerc ]; then
+        if [ -e ~/.pinerc ]; then
+            sudo rm -rf ~/.pinerc
+        fi
+    fi
+    sudo cp `pwd`/pinerc ~/.pinerc
+
+    if [ -e `pwd`/smb.conf-private ]; then
+        if [ -e /etc/samba/smb.conf ]; then
+            sudo rm -rf /etc/samba/smb.conf
+        fi
+    fi
+    sudo cp `pwd`/smb.conf-private /etc/samba/smb.conf
+    sudo chmod 644 /etc/samba/smb.conf
+    sudo /etc/rc.d/samba restart
+
+    #Install misc scripts.  This should be last in this if block.
+    if [ -e ../misc_scripts/build_me.sh ]; then
+        ../misc_scripts/build_me.sh
+    fi
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
@@ -80,11 +113,6 @@ if [[ `uname -a`  =~ ARCH ]]; then
     fi
     cp `pwd`/mcabberrc ~/.mcabberrc
     
-    if [ -e ~/.bashrc ]; then
-        rm -rf ~/.bashrc
-    fi
-    cp `pwd`/bashrc ~/.bashrc
-    source ~/.bashrc
     
     if [ -e /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf ]; then
         sudo rm -rf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf
@@ -143,33 +171,45 @@ if [[ `uname -a`  =~ ARCH ]]; then
         sudo rm -rf /etc/syslog-ng/syslog-ng-private.conf
     fi
     sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng-private.conf
+    sudo /etc/rc.d/syslog-ng restart
 
     if [ -e /etc/iptables/iptables.rules ]; then
-        echo "/etc/iptables/iptables.rules already exists, not over-writing."
-    else 
-        sudo cp `pwd`/iptables.rules /etc/iptables/iptables.rules
+        sudo rm -rf /etc/iptables/iptables.rules
     fi
+    sudo cp `pwd`/iptables.rules-private /etc/iptables/iptables.rules
+    sudo /etc/rc.d/iptables restart
     
-    if [ -e `pwd`/hosts ]; then
+    if [ -e `pwd`/hosts-private ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts 
         fi
     fi
-    sudo cp `pwd`/hosts /etc/hosts
+    sudo cp `pwd`/hosts-private /etc/hosts
+    sudo chmod 444 /etc/hosts
+   
+    #This should always be last in the ordering for Arch.
+    if [ -e ~/.bashrc ]; then
+        rm -rf ~/.bashrc
+    fi
+    cp `pwd`/bashrc ~/.bashrc
+    source ~/.bashrc
 fi
 
 if [[ `uname -a`  =~ Darwin ]]; then
     echo "Doing Arch / OS X Neutral Configurations."
     
-    if [ -e ~/.bashrc ]; then
-        rm -rf ~/.bashrc
-    fi
-    cp `pwd`/bashrc ~/.bash_profile
     source ~/.bash_profile
 
     if [ -e ~/.inputrc ]; then
         rm -rf ~/.inputrc
     fi
     cp `pwd`/inputrc ~/.inputrc
+    
+    #This should always be last in the ordering for Darwin.
+    if [ -e ~/.bashrc ]; then
+        rm -rf ~/.bashrc
+    fi
+    cp `pwd`/bashrc ~/.bash_profile
 fi
+
 echo "Done..."
