@@ -90,15 +90,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     sudo cp `pwd`/pinerc ~/.pinerc
 
-    if [ -e `pwd`/smb.conf-private ]; then
-        if [ -e /etc/samba/smb.conf ]; then
-            sudo rm -rf /etc/samba/smb.conf
-        fi
-    fi
-    sudo cp `pwd`/smb.conf-private /etc/samba/smb.conf
-    sudo chmod 644 /etc/samba/smb.conf
-    sudo /etc/rc.d/samba restart
-
     #Install misc scripts.  This should be last in this if block.
     if [ -e ../misc_scripts/build_me.sh ]; then
         ../misc_scripts/build_me.sh
@@ -186,7 +177,34 @@ if [[ `uname -a`  =~ ARCH ]]; then
     fi
     sudo cp `pwd`/hosts-private /etc/hosts
     sudo chmod 444 /etc/hosts
-   
+    
+    if [ -e `pwd`/nsswitch.conf ]; then
+        if [ -e /etc/nsswitch.conf ]; then
+            sudo rm -rf /etc/nsswitch.conf
+        fi
+    fi 
+    sudo cp `pwd`/nsswitch.conf /etc/nsswitch.conf
+    sudo chmod 644 /etc/nsswitch.conf 
+    
+    if [ -e `pwd`/smb.conf-private ]; then
+        if [ -e /etc/samba/smb.conf ]; then
+            sudo rm -rf /etc/samba/smb.conf
+        fi
+    fi
+    sudo cp `pwd`/smb.conf-private /etc/samba/smb.conf
+    sudo chmod 644 /etc/samba/smb.conf
+    
+    if [ -e `pwd`/samba ]; then
+        if [ -e /etc/conf.d/samba ]; then
+            sudo rm -rf /etc/conf.d/samba
+        fi
+    fi 
+    sudo cp `pwd`/samba /etc/conf.d/samba
+    sudo chmod 644 /etc/conf.d/samba 
+    
+    sudo /etc/rc.d/samba restart
+
+
     #This should always be last in the ordering for Arch.
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
