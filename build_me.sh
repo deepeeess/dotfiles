@@ -1,21 +1,25 @@
 #!/bin/sh
-#OS Config Bootstrap 
+#OS Config Bootstrap
 #Dan Sullivan
 
-echo "Building OS Configuration"
+#variable configuration
+export XINIT_CONFIG=~/.xinitrc-xmonad
+
+echo "Building OS Configuration..."
 
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
-    echo "Doing Arch / OS X Neutral Configurations."
+    echo "Doing Arch / OS X Neutral Configurations..."
 
-    if [ -e ~/.aliases-private ]; then
-        rm -rf ~/.aliases-private
-    fi
-    cp  `pwd`/aliases-private ~/.aliases-private
+    #if [ -e ~/.aliases-private ]; then
+    #    rm -rf ~/.aliases-private
+    #fi
+    #cp  `pwd`/aliases-private ~/.aliases-private
 
     if [ -e ~/.aliases ]; then
         rm -rf ~/.aliases
     fi
     cp `pwd`/aliases ~/.aliases
+    #source ~/.aliases
 
     if [ -e ~/.functions ]; then
         rm -rf ~/.functions
@@ -31,17 +35,29 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         rm -rf ~/.offlineimaprc
     fi 
     cp `pwd`/offlineimaprc ~/.offlineimaprc
+    if [ -e ~/.offlineimaprc-nognome ]; then
+        rm -rf ~/.offlineimaprc-nognome
+    fi
+    cp `pwd`/offlineimaprc-nognome ~/.offlineimaprc-nognome
+    #the directories for OfflineIMAP
+    mkdir -p ~/Mail
 
-    if [ -e ~/imapfilter.conf ]; then
+    if [ -e ~/.imapfilter ]; then
         rm -rf ~/.imapfilter
     fi
     mkdir -p ~/.imapfilter/
-    cp `pwd`/imapfilter.conf ~/.imapfilter/config.lua
+    cp `pwd`/imapfilter-stable.conf ~/.imapfilter/config-stable.lua
+    cp `pwd`/imapfilter-experimental.conf ~/.imapfilter/config-experimental.lua
 
     if [ -e ~/.screenrc ]; then
     rm -rf ~/.screenrc
     fi 
     cp `pwd`/screenrc ~/.screenrc
+    
+    if [ -e ~/.mscreenrc ]; then
+    rm -rf ~/.mscreenrc
+    fi 
+    cp `pwd`/mscreenrc ~/.mscreenrc
 
     if [ -e ~/.vimrc ]; then
         rm -rf ~/.vimrc
@@ -54,14 +70,30 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/aliases-private ~/.aliases-private
+    #source ~/.aliases-private
     
-    if [ -e `pwd`/ircrc ]; then
-        if [ -e ~/.ircrc ]; then
-            rm -rf ~/.ircrc
+    if [ -e `pwd`/efnet.ircrc ]; then
+        if [ -e ~/.efnet.ircrc ]; then
+            rm -rf ~/.efnet.ircrc
         fi
     fi
-    cp `pwd`/ircrc ~/.ircrc
+    cp `pwd`/efnet.ircrc ~/.efnet.ircrc
     
+    if [ -e `pwd`/freenode.ircrc ]; then
+        if [ -e ~/.freenode.ircrc ]; then
+            rm -rf ~/.freenode.ircrc
+        fi
+    fi
+    cp `pwd`/freenode.ircrc ~/.freenode.ircrc
+    
+    cp `pwd`/global.ircrc ~/.global.ircrc
+    if [ -e `pwd`/global.ircrc ]; then
+        if [ -e ~/.global.ircrc ]; then
+            rm -rf ~/.global.ircrc
+        fi
+    fi
+    cp `pwd`/global.ircrc ~/.global.ircrc
+   
     if [ -e `pwd`/mailcap ]; then
         if [ -e ~/.mailcap ]; then
             rm -rf ~/.mailcap
@@ -76,12 +108,12 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     cp `pwd`/muttrc ~/.muttrc
     
-    if [ -e `pwd`/fstab-private ]; then
-        if [ -e /etc/fstab-private ]; then
-            sudo rm -rf /etc/fstab
-        fi
-    fi
-    sudo cp `pwd`/fstab-private /etc/fstab
+    #if [ -e `pwd`/fstab-private ]; then
+    #    if [ -e /etc/fstab-private ]; then
+    #        sudo rm -rf /etc/fstab
+    #    fi
+    #fi
+    #sudo cp `pwd`/fstab-private /etc/fstab
 
     if [ -e `pwd`/pinerc ]; then
         if [ -e ~/.pinerc ]; then
@@ -97,7 +129,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
-    echo "Doing Arch Only Configuration."
+    echo "Doing Arch Only Configuration..."
 
     if [ -e ~/.mcabberrc ]; then
         rm -rf ~/.mcabberrc
@@ -108,7 +140,8 @@ if [[ `uname -a`  =~ ARCH ]]; then
     if [ -e /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf ]; then
         sudo rm -rf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf
     fi
-    sudo cp `pwd`/90-graphics-hypervisor.conf /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf 
+    sudo cp `pwd`/90-graphics-hypervisor.conf \
+        /etc/X11/xorg.conf.d/90-graphics-hypervisor.conf 
 
     mkdir -p ~/.xmonad
     if [ -e ~/.xmonad/xmonad.hs ]; then
@@ -122,54 +155,67 @@ if [[ `uname -a`  =~ ARCH ]]; then
         fi
     fi
     cp `pwd`/xmobarrc ~/.xmobarrc
-    
-    if [ -e /usr/bin/xmonad ]; then
-        echo "Recompiling and restarting xmonad..."
-        #This appears to restart xmobar as well, the pid of xmobar changes.
-        #It didn't used to do this.
-        xmonad --recompile; xmonad --restart;
-        #echo pgrep xmobar: `pgrep xmobar`
-        #echo count:  `pgrep xmobar | wc`
-        #for pid in `pgrep xmobar`; do
-        #    echo pid: $pid
-        #done
-        #echo "Starting xmobar..."
-        #xmobar &
-    fi
-
-    if [ -e ~/.Xdefaults ]; then
-        rm -rf ~/.Xdefaults
-    fi
-    cp `pwd`/Xdefaults ~/.Xdefaults
+   
+    #if [ -e ~/.Xdefaults ]; then
+    #    rm -rf ~/.Xdefaults
+    #fi
+    #cp `pwd`/Xdefaults ~/.Xdefaults
 
     if [ -e ~/.Xresources ]; then
         rm -rf ~/.Xresources
     fi
     cp `pwd`/Xresources ~/.Xresources
-    xrdb -load ~/.Xresources
 
-    if [ -e ~/.xinitrc ]; then
+    if [ -e ~/.xinitrc-xmonad ]; then
+        rm -rf ~/.xinitrc-xmonad
+    else
+        :
+    fi
+    cp `pwd`/xinitrc-xmonad ~/.xinitrc-xmonad
+    
+    if [ -e ~/.xinitrc ] ; then
         rm -rf ~/.xinitrc
     fi
-    cp `pwd`/xinitrc ~/.xinitrc
+    ln -s $XINIT_CONFIG ~/.xinitrc
 
+    sudo mkdir -p /var/log/syslog-ng
+    sudo chown root:log /var/log/syslog-ng
+    sudo chmod 750 /var/log/syslog-ng 
     if [ -e /etc/syslog-ng/syslog-ng.conf ]; then
         sudo rm -rf /etc/syslog-ng/syslog-ng.conf
     fi
     sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
-    
+    sudo systemctl enable syslog-ng
+    sudo systemctl restart syslog-ng
+ 
     if [ -e /etc/syslog-ng/syslog-ng-private.conf ]; then
         sudo rm -rf /etc/syslog-ng/syslog-ng-private.conf
     fi
     sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng-private.conf
-    sudo /etc/rc.d/syslog-ng restart
+    #sudo /etc/rc.d/syslog-ng restart
 
     if [ -e /etc/iptables/iptables.rules ]; then
         sudo rm -rf /etc/iptables/iptables.rules
     fi
-    sudo cp `pwd`/iptables.rules-private /etc/iptables/iptables.rules
-    sudo /etc/rc.d/iptables restart
+    sudo cp `pwd`/iptables.rules /etc/iptables/iptables.rules
     
+    if [ -e /etc/iptables/iptables.rules-private ]; then
+        sudo rm -rf /etc/iptables/iptables.rules-private
+    fi
+    sudo cp `pwd`/iptables.rules-private /etc/iptables/iptables.rules-private
+
+    if [ -e /usr/lib/systemd/system/iptables.service ]; then
+        sudo rm -rf /usr/lib/systemd/system/iptables.service 
+    fi
+    sudo cp `pwd`/iptables.service /usr/lib/systemd/system/iptables.service
+    sudo chmod 644 /usr/lib/systemd/system/iptables.service
+    #reload the config
+    sudo systemctl --system daemon-reload
+    sudo systemctl reload iptables
+    sudo systemctl enable iptables
+    sudo systemctl restart iptables
+    #sudo /etc/rc.d/iptables restart
+ 
     if [ -e `pwd`/hosts-private ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts 
@@ -201,23 +247,138 @@ if [[ `uname -a`  =~ ARCH ]]; then
     fi 
     sudo cp `pwd`/samba /etc/conf.d/samba
     sudo chmod 644 /etc/conf.d/samba 
-    
-    sudo /etc/rc.d/samba restart
+    #sudo /etc/rc.d/samba restart
+    sudo systemctl reload samba
 
+    #if [ -e 'pwd'/network.service ]; then
+    #    if [ -e /etc/systemd/system/network.service ]; then
+    #        sudo rm -rf /etc/systemd/system/network.service
+    #    fi
+    #fi
+    #sudo cp `pwd`/network.service /etc/systemd/system/network.service
+    #sudo chmod 644 /etc/systemd/system/network.service
+    
+    if [ -e `pwd`/network@eno1 ]; then
+        if [ -e /etc/conf.d/network@eno1 ]; then
+            sudo rm -rf /etc/conf.d/network@eno1
+        fi
+    fi
+    sudo cp `pwd`/network@eno1 /etc/conf.d/network@eno1
+
+    if [ -e `pwd`/network@.service ]; then
+        if [ -e /etc/systemd/system/network@.service ]; then
+            sudo rm -rf /etc/systemd/system/network@.service
+            :
+        fi
+    fi
+    sudo cp `pwd`/network@.service /etc/systemd/system/network@.service
+    #reload systemd, scan for new or changed units.
+    sudo systemctl daemon-reload
+    sudo systemctl enable network@eno1.service
+    sudo systemctl stop network@eno1.service
+    sudo systemctl start network@eno1.service
+    
+    #sudo systemctl stop offlineimap@.service
+    if [ -e `pwd`/offlineimap@.service ]; then
+        if [ -e /etc/systemd/system/offlineimap@.service ]; then
+            sudo rm -rf /etc/systemd/system/offlineimap@.service 
+        fi
+    fi
+    #sudo cp `pwd`/offlineimap@.service /etc/systemd/system/offlineimap@.service
+    #sudo systemctl enable offlineimap@.service
+    #sudo systemctl start offlineimap@.service 
+
+    #virtualbox kernel modules
+    if [ -e `pwd`/virtualbox.conf ]; then
+        if [ -e /etc/modules-load.d/virtualbox.conf ]; then
+            sudo rm -rf /etc/modules-load.d/virtualbox.conf
+        fi
+    fi
+    sudo cp `pwd`/virtualbox.conf /etc/modules-load.d/virtualbox.conf
+    
+    if [ -e `pwd`/truecrypt.conf ]; then
+        if [ -e /etc/modules-load.d/truecrypt.conf ]; then
+            sudo rm -rf /etc/modules-load.d/truecrypt.conf
+        fi
+    fi
+    sudo cp `pwd`/truecrypt.conf /etc/modules-load.d/truecrypt.conf
 
     #This should always be last in the ordering for Arch.
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
     fi
     cp `pwd`/bashrc ~/.bashrc
-    source ~/.bashrc
+    #source ~/.bashrc
+
+    if [ -e ~/.bash_profile ]; then
+        rm -rf ~/.bash_profile
+    fi
+    cp `pwd`/bash_profile ~/.bash_profile
+
+    if [ -e /etc/ssh/sshd_config ]; then
+        sudo rm -rf /etc/ssh/sshd_config 
+    fi
+    sudo cp `pwd`/sshd_config-private /etc/ssh/sshd_config
+    sudo systemctl enable sshd
+    sudo systemctl restart sshd
+
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    if [ -e ~/.ssh/ssh_config ]; then
+        rm -rf ~/.ssh/ssh_config
+    fi
+    cp `pwd`/ssh_config ~/.ssh/ssh_config
+ 
+    if [ -d ~/.config/xfce4/terminal ]; then
+        mkdir -p ~/.config/xfce4/terminal
+    fi 
+    if [ -e ~/.config/xfce4/terminal/terminalrc ]; then
+        rm -rf ~/.config/xfce4/terminal/terminalrc
+    fi
+    cp `pwd`/xfce4-terminalrc ~/.config/xfce4/terminal/terminalrc
+
+    if [ -e  /etc/cron.daily/updaterepodatabases ]; then
+        sudo rm -rf /etc/cron.daily/updaterepodatabases
+    fi
+    sudo cp `pwd`/updaterepodatabases /etc/cron.daily/updaterepodatabases
+    sudo chmod 744 /etc/cron.daily/updaterepodatabases
+    #make sure cronie is enabled and running, had a problem with this 12/6/2013
+    sudo systemctl enable cronie
+    sudo systemctl restart cronie
+    
+    if [ -e `pwd`/named.conf ]; then
+        if [ -e /etc/named.conf ]; then
+            sudo rm -rf /etc/named.conf
+        fi
+    fi
+    sudo cp `pwd`/named.conf /etc/named.conf
+    sudo systemctl enable named
+    sudo chown root:named /etc/named.conf
+    sudo chmod 600 /etc/named.conf
+
+    #Make sure this is beloved neve and that we are logged on locally before doing X stuff
+    if [ -e /usr/bin/xmonad ]; then
+        if [[ -z "$SSH_TTY" && `uname -a` =~ ARCH ]]; then
+            echo "Recompiling and restarting xmonad..."
+            #This appears to restart xmobar as well, the pid of xmobar changes.
+            #It didn't used to do this.
+            xmonad --recompile; 
+            xmonad --restart;
+            #echo pgrep xmobar: `pgrep xmobar`
+            #echo count:  `pgrep xmobar | wc`
+            #for pid in `pgrep xmobar`; do
+            #    echo pid: $pid
+            #done
+            #echo "Starting xmobar..."
+            #xmobar &
+            xrdb -load ~/.Xresources
+        fi
+    fi
 fi
 
-if [[ `uname -a`  =~ Darwin ]]; then
-    echo "Doing Arch / OS X Neutral Configurations."
+if [[ `uname -a` =~ Darwin ]]; then
+    echo "Doing OS X Specific Configurations..."
     
-    source ~/.bash_profile
-
     if [ -e ~/.inputrc ]; then
         rm -rf ~/.inputrc
     fi
@@ -227,7 +388,9 @@ if [[ `uname -a`  =~ Darwin ]]; then
     if [ -e ~/.bashrc ]; then
         rm -rf ~/.bashrc
     fi
-    cp `pwd`/bashrc ~/.bash_profile
+    #cp `pwd`/bashrc ~/.bash_profile
+    cp `pwd`/bashrc ~/.bashrc
+    #source ~/.bash_profile
 fi
 
-echo "Done..."
+echo "Done running build_me.sh..."
