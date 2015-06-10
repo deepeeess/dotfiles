@@ -114,6 +114,13 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     #    fi
     #fi
     #sudo cp `pwd`/fstab-private /etc/fstab
+    
+    if [ -e `pwd`/npmrc ]; then
+        if [ -e ~/.npmrc ]; then
+            rm -rf ~/.npmrc
+        fi
+    fi
+    cp `pwd`/npmrc ~/.npmrc
 
     if [ -e `pwd`/pinerc ]; then
         if [ -e ~/.pinerc ]; then
@@ -122,10 +129,36 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     sudo cp `pwd`/pinerc ~/.pinerc
 
+    if [ -e `pwd`/gemrc ]; then
+        if [ -e ~/.gemrc ]; then
+            sudo rm -rf ~/.gemrc
+        fi
+    fi
+    cp `pwd`/gemrc ~/.gemrc
+    
     #Install misc scripts.  This should be last in this if block.
     if [ -e ../misc_scripts/build_me.sh ]; then
         ../misc_scripts/build_me.sh
     fi
+    
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    if [ -e ~/.ssh/config ]; then
+        rm -rf ~/.ssh/config
+    fi
+    cp `pwd`/ssh_config ~/.ssh/config
+
+    if [ -e `pwd`/bash_logout ]; then
+        if [ -e ~/.bash_logout ]; then
+            sudo rm -rf ~/.bash_logout
+        fi
+    fi
+    cp `pwd`/bash_logout ~/.bash_logout
+    chmod 700 ~/.bash_logout
+
+    #Make sure git is configured (for Github).
+    git config --global user.name "Dan Sullivan"
+    git config --global user.email "dansullivan@gmail.com"
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
@@ -187,7 +220,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo cp `pwd`/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
     sudo systemctl enable syslog-ng
     sudo systemctl restart syslog-ng
- 
+
     if [ -e /etc/syslog-ng/syslog-ng-private.conf ]; then
         sudo rm -rf /etc/syslog-ng/syslog-ng-private.conf
     fi
@@ -215,7 +248,8 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo systemctl enable iptables
     sudo systemctl restart iptables
     #sudo /etc/rc.d/iptables restart
- 
+
+    echo executing this
     if [ -e `pwd`/hosts-private ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts 
@@ -248,7 +282,8 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo cp `pwd`/samba /etc/conf.d/samba
     sudo chmod 644 /etc/conf.d/samba 
     #sudo /etc/rc.d/samba restart
-    sudo systemctl reload samba
+    #sudo systemctl reload samba
+    echo "Working on Arch Only Configuration..."
 
     #if [ -e 'pwd'/network.service ]; then
     #    if [ -e /etc/systemd/system/network.service ]; then
@@ -315,6 +350,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
     fi
     cp `pwd`/bash_profile ~/.bash_profile
 
+    #sshd
     if [ -e /etc/ssh/sshd_config ]; then
         sudo rm -rf /etc/ssh/sshd_config 
     fi
@@ -322,13 +358,6 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo systemctl enable sshd
     sudo systemctl restart sshd
 
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
-    if [ -e ~/.ssh/ssh_config ]; then
-        rm -rf ~/.ssh/ssh_config
-    fi
-    cp `pwd`/ssh_config ~/.ssh/ssh_config
- 
     if [ -d ~/.config/xfce4/terminal ]; then
         mkdir -p ~/.config/xfce4/terminal
     fi 
@@ -356,6 +385,16 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo chown root:named /etc/named.conf
     sudo chmod 600 /etc/named.conf
 
+    if [ -e `pwd`/ntp.conf ]; then
+      if [ -e /etc/ntp.con ]; then
+        sudo rm -rf /etc/ntp.conf
+      fi
+    fi
+    sudo chmod 644 /etc/ntp.conf
+    #sudo systemctl enable ntpd
+    #sudo systemctl reload ntpd
+    
+
     #Make sure this is beloved neve and that we are logged on locally before doing X stuff
     if [ -e /usr/bin/xmonad ]; then
         if [[ -z "$SSH_TTY" && `uname -a` =~ ARCH ]]; then
@@ -374,6 +413,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
             xrdb -load ~/.Xresources
         fi
     fi
+    echo "Finishing Arch Only Configuration..."
 fi
 
 if [[ `uname -a` =~ Darwin ]]; then
@@ -391,6 +431,29 @@ if [[ `uname -a` =~ Darwin ]]; then
     #cp `pwd`/bashrc ~/.bash_profile
     cp `pwd`/bashrc ~/.bashrc
     #source ~/.bash_profile
+    
+    if [ -e `pwd`/hosts-private ]; then
+        if [ -e /etc/hosts.ac ]; then
+            sudo rm -rf /etc/hosts.ac
+        fi
+    fi
+    sudo cp `pwd`/hosts-private /etc/hosts.ac
+    sudo chmod 444 /etc/hosts.ac
+    
+    if [ -e `pwd`/hosts-private ]; then
+        if [ -e /etc/hosts ]; then
+            sudo rm -rf /etc/hosts
+        fi
+    fi
+    sudo cp `pwd`/hosts-private /etc/hosts
+    sudo chmod 444 /etc/hosts
+
+    #disable press and hold, 10.10
+    defaults write -g ApplePressAndHoldEnabled -bool false
+   
+    #enable locate
+    sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+
 fi
 
 echo "Done running build_me.sh..."
