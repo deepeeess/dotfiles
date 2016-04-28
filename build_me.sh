@@ -121,6 +121,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/npmrc ~/.npmrc
+    chmod 600 ~/.npmrc
 
     if [ -e `pwd`/pinerc ]; then
         if [ -e ~/.pinerc ]; then
@@ -141,13 +142,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         ../misc_scripts/build_me.sh
     fi
     
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
-    if [ -e ~/.ssh/config ]; then
-        rm -rf ~/.ssh/config
-    fi
-    cp `pwd`/ssh_config ~/.ssh/config
-
     if [ -e `pwd`/bash_logout ]; then
         if [ -e ~/.bash_logout ]; then
             sudo rm -rf ~/.bash_logout
@@ -156,6 +150,43 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     cp `pwd`/bash_logout ~/.bash_logout
     chmod 700 ~/.bash_logout
 
+    #empty out the profile
+    if [ -e `pwd`/profile ]; then
+        if [ -e ~/.profile ]; then
+            sudo rm -rf ~/.profile
+        fi
+    fi
+    cp `pwd`/profile ~/.profile
+    chmod 700 ~/.profile
+    
+    if [ -e ~/.bash_profile ]; then
+        rm -rf ~/.bash_profile
+    fi
+    cp `pwd`/bash_profile ~/.bash_profile
+
+    if [ -e `pwd`/curlrc ]; then
+        if [ -e ~/.curlrc ]; then
+            sudo rm -rf ~/.curlrc
+        fi
+    fi
+    cp `pwd`/curlrc ~/.curlrc
+    chmod 600 ~/.curlrc
+
+    if [ -e `pwd`/my.cnf ]; then
+        if [ -e ~/.my.cnf ]; then
+            sudo rm -rf ~/.my.cnf
+        fi
+    fi
+    cp `pwd`/my.cnf ~/.my.cnf
+    chmod 600 ~/.my.cnf
+    
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    if [ -e ~/.ssh/config ]; then
+        rm -rf ~/.ssh/config
+    fi
+    cp `pwd`/ssh_config ~/.ssh/config
+    
     #Make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
@@ -345,10 +376,6 @@ if [[ `uname -a`  =~ ARCH ]]; then
     cp `pwd`/bashrc ~/.bashrc
     #source ~/.bashrc
 
-    if [ -e ~/.bash_profile ]; then
-        rm -rf ~/.bash_profile
-    fi
-    cp `pwd`/bash_profile ~/.bash_profile
 
     #sshd
     if [ -e /etc/ssh/sshd_config ]; then
@@ -357,7 +384,7 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo cp `pwd`/sshd_config-private /etc/ssh/sshd_config
     sudo systemctl enable sshd
     sudo systemctl restart sshd
-
+    
     if [ -d ~/.config/xfce4/terminal ]; then
         mkdir -p ~/.config/xfce4/terminal
     fi 
@@ -386,14 +413,76 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo chmod 600 /etc/named.conf
 
     if [ -e `pwd`/ntp.conf ]; then
-      if [ -e /etc/ntp.con ]; then
+      if [ -e /etc/ntp.conf ]; then
         sudo rm -rf /etc/ntp.conf
       fi
     fi
+    sudo cp `pwd`/ntp.conf /etc/ntp.conf
     sudo chmod 644 /etc/ntp.conf
     #sudo systemctl enable ntpd
     #sudo systemctl reload ntpd
-    
+
+    if [ -e `pwd`/mkinitcpio.conf ]; then
+      if [ -e /etc/mkinitcpio.conf ]; then
+        sudo rm -rf /etc/mkinitcpio.conf
+      fi
+    fi
+    sudo cp `pwd`/mkinitcpio.conf /etc/mkinitcpio.conf
+    sudo chmod 644 /etc/mkinitcpio.conf
+  
+    echo "Shutting down NIS" 
+    sudo systemctl stop ypbind
+    sudo systemctl stop rpcbind
+    if [ -e `pwd`/yp.conf ]; then
+      if [ -e /etc/yp.conf ]; then
+        sudo rm -rf /etc/yp.conf
+      fi
+    fi
+    sudo cp `pwd`/yp.conf /etc/yp.conf
+    sudo chmod 644 /etc/yp.conf
+    sudo chown root:root /etc/yp.conf
+    #echo "Starting NIS"
+    #sudo systemctl start rpcbind
+    #sudo systemctl start ypbind
+    sudo domainname UofC
+
+    if [ -e `pwd`/Xwrapper.config ]; then
+      if [ -e /etc/X11/Xwrapper.config ]; then
+        sudo rm -rf /etc/X11/Xwrapper.config
+      fi
+    fi
+    sudo cp `pwd`/Xwrapper.config /etc/X11/Xwrapper.config
+    sudo chmod 644 /etc/X11/Xwrapper.config
+    sudo chown root:root /etc/X11/Xwrapper.config
+
+    #remove anything installed by cpan even if it was done by root
+    #https://wiki.archlinux.org/index.php/Perl_Policy
+    sudo rm -rf /usr/lib/perl5/site_perl/*
+    sudo rm -rf /usr/share/perl5/site_perl/*
+    #actually remove cpan
+    sudo rm -rf /usr/bin/core_perl/cpan
+    sudo rm -rf /usr/share/man/man1/cpan.1perl.gz
+
+    #delete npm global packages (other than npm)
+    #sudo mkdir -p /usr/lib/node_modules
+    #npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
+    #sudo npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
+    #sudo pacman -Rs npm --noconfirm 2> /dev/null
+    #remove node_modules across the entire system
+    #sudo find / -type d -name 'node_modules' -exec rm -rf {} \; >/dev/null
+    #sudo pacman -S npm --force --noconfirm 2> /dev/null
+
+    #lib hacks
+    #sudo ln -s /usr/lib/libgnutls.so.30 /usr/lib/libgnutls.so.28
+
+    if [ -e `pwd`/99-sysctl.conf ]; then
+      if [ -e /etc/sysctl.d/99-sysctl.conf ]; then
+        sudo rm -rf /etc/sysctl.d/99-sysctl.conf
+      fi
+    fi
+    sudo cp `pwd`/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf
+    sudo chown root:root /etc/sysctl.d/99-sysctl.conf
+    sudo chmod 644 /etc/sysctl.d/99-sysctl.conf
 
     #Make sure this is beloved neve and that we are logged on locally before doing X stuff
     if [ -e /usr/bin/xmonad ]; then
@@ -448,11 +537,21 @@ if [[ `uname -a` =~ Darwin ]]; then
     sudo cp `pwd`/hosts-private /etc/hosts
     sudo chmod 444 /etc/hosts
 
+    if [ ! -f "~/.bash_sessions_disable" ]; then
+      touch ~/.bash_sessions_disable
+    fi
+
     #disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
-   
+  
+    #disable copying colors from terminal 10.11
+    defaults write com.apple.Terminal CopyAttributesProfile com.apple.Terminal.no-attributes
+
     #enable locate
     sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+
+    #show all finder files
+    defaults write com.apple.finder AppleShowAllFiles TRUE
 
 fi
 
