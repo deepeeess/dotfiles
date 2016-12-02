@@ -7,7 +7,7 @@
 #Chronological for nostalgic purposes :-)
 #Yauort should be installed prior to running this script
 
-#first, update everything
+#first, update the database 
 sudo pacman -Syy
 
 sudo pacman -S lynx --noconfirm
@@ -185,7 +185,8 @@ sudo pacman -S net-snmp --noconfirm
 #flash plugin 9/2
 sudo pacman -S flashplugin --noconfirm
 #keepass-x
-sudo pacman -S keepassx --noconfirm
+#sudo pacman -S keepassx --noconfirm
+sudo pacman -S keepassx2 --noconfirm
 #mlocate
 sudo pacman -S mlocate --noconfirm
 sudo updatedb
@@ -235,19 +236,113 @@ sudo pacman -S base-devel --noconfirm
 sudo pacman -S wpa_supplicant --noconfirm
 #command line wireless config 12/16/2013
 sudo pacman -S iw --noconfirm
+#apvlv is a pdf reader with vim-like keybindings
+sudo pacman -S apvlv --noconfirm
+#color dropper 1/2/2014
+sudo pacman -S gcolor2 --noconfirm
+#nodejs (for npm) 1/2/2014
+sudo pacman -S nodejs --noconfirm
+#phamtomjs
+sudo pacman -S phantomjs --noconfirm
+#xprop, examine the properties of an x window 1/8/2014
+sudo pacman -S xorg-xprop --noconfirm
+#appres
+sudo pacman -S xorg-appres --noconfirm
+#baobab, disk reporting
+#sudo pacman -S baobab --noconfirm
+#xdiskusage
+sudo pacman -S xdiskusage --noconfirm
+#ntpd 
+sudo pacman -S ntp --noconfirm
+#
+sudo pacman -S postgresql-libs --noconfirm
+#node
+sudo pacman -S nodejs --noconfirm
+#gnuplut
+sudo pacman -S gnuplot --noconfirm
+#
+sudo pacman -S mongodb --noconfirm
+#dmidecode 10/8/2014
+sudo pacman -S dmidecode --noconfirm
+
+#NIS client (not server) 6/10/2015
+sudo pacman -S yp-tools --noconfirm
+pacman -S ypbind-mt --noconfirm
+
+#systemd 6/10/2015
+sudo pacman -S systemd --noconfirm
+
+#this block for chromium 6/11/2015
+sudo pacman -S icu --noconfirm
+sudo pacman -S libvpx --noconfirm
+sudo pacman -S gnutls --noconfirm
+sudo pacman -S pciutils --noconfirm
+sudo pacman -S libcups --noconfirm
+sudo pacman -S chromium --noconfirm
+
+#this block for firefox 
+sudo pacman -S firefox --noconfirm
+sudo pacman -S nss --noconfirm
+sudo pacman -S sqllite --noconfirm
+sudo pacman -S ca-certificates --noconfirm
+sudo pacman -S firefox --noconfirm
+
+#perlbrew 6/11/2015
+sudo pacman -S perlbrew --noconfirm
+
+#php for dokuwiki 6/16/2015
+sudo pacman -S php --noconfirm
+
+#boost, for building TORQUE 6/19/2015
+sudo pacman -S boost --noconfirm
+
+sudo pcaman -S xorg-xmodmap --noconfirm
+
+#npm 10/21/2015
+sudo pacman -S npm --noconfirm
+
+#virtualenv
+sudo pacman -S python2-virtualenv --noconfirm
+
+#wkhtmltopdf 12/7/2015
+sudo pacman -S wkhtmltopdf --noconfirm
+
+#for gtk2 themes
+sudo pacman -S mate-themes --noconfirm
+
+#xfce
+sudo pacman -S xfce4 --noconfirm
+
+#pandoc, convert docx to pdf
+sudo pacman -S pandoc --noconfirm
+
+#remmina, tabbed rdp client
+sudo pacman -S remmina --noconfirm
+
+#freerdp (required for remmina rdp support)
+sudo pacman -S freerdp --noconfirm
 
 ###post install tasks###
-xset fp rehash
-fc-cache
+#re-hash fonts directory
+sudo xset fp rehash
+#build font information cache files
+sudo fc-cache
 ###end post install tasks###
 
 #dynagen, required for gns3
-sudo yaourt -S dynagen --noconfirm
+yaourt -S dynagen --noconfirm
 #python2-pyqt4, required for gns3
-sudo yaourt -S python-pyqtr --noconfirm
+yaourt -S python-pyqtr --noconfirm
 #gns3 network simulator
-sudo yaourt -S gns3 --noconfirm
+yaourt -S gns3 --noconfirm
 #10/31/2013 imapfilter
-sudo yaourt -S imapfilter --noconfirm
+yaourt -S imapfilter --noconfirm
 #b43-firmware 12/15/2013
-sudo yaourt -S b43-firmware --noconfirm
+yaourt -S b43-firmware --noconfirm
+#xfce4 task bar panel
+yaourt -S xfce4-taskbar-plugin --noconfirm --insecure
+
+#anyconnect 4/23/2015
+#sudo yaourt -S gnutls --noconfirm
+sudo yaourt -S openconnect --noconfirm
+sudo yaourt -S nettle --noconfirm

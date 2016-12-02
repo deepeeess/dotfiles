@@ -5,6 +5,13 @@
 #variable configuration
 export XINIT_CONFIG=~/.xinitrc-xmonad
 
+type blackbox_decrypt_all_files >/dev/null 2>&1 || \
+{ echo >&2 "BlackBox is required.  Aborting."; exit 1; }
+
+echo "Decrypting all BlackBox files..."
+
+blackbox_decrypt_all_files
+
 echo "Building OS Configuration..."
 
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
@@ -186,7 +193,28 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         rm -rf ~/.ssh/config
     fi
     cp `pwd`/ssh_config ~/.ssh/config
-    
+   
+    mkdir -p /etc/salt
+    if [ -e /etc/salt-master ]; then
+      sudo rm -rf /etc/salt/master
+    fi
+    sudo cp `pwd`/salt-master /etc/salt/master
+    sudo chmod 444 /etc/salt/master
+
+    mkdir -p /etc/salt
+    if [ -e /etc/salt-roster ]; then
+      sudo rm -rf /etc/salt/roster
+    fi
+    sudo cp `pwd`/salt-roster /etc/salt/roster
+    sudo chmod 444 /etc/salt/roster
+ 
+    mkdir -p /etc/salt
+    if [ -e /etc/salt-minion ]; then
+      sudo rm -rf /etc/salt/minion
+    fi
+    sudo cp `pwd`/salt-minion /etc/salt/minion
+    sudo chmod 444 /etc/salt/minion
+
     #Make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
@@ -541,6 +569,16 @@ if [[ `uname -a` =~ Darwin ]]; then
       touch ~/.bash_sessions_disable
     fi
 
+    if [ ! -f "~/.passwd-s3fs" ]; then
+        rm -rf ~/.passwd-s3fs
+    fi
+    cp `pwd`/passwd-s3fs ~/.passwd-s3fs
+    chmod 600 ~/.passwd-s3fs 
+    
+    IAM=`whoami`
+    sudo mkdir -p /mnt/devopsrockstars-web-backup/
+    sudo chown -R $IAM /mnt/
+
     #disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
   
@@ -555,4 +593,5 @@ if [[ `uname -a` =~ Darwin ]]; then
 
 fi
 
+blackbox_shred_all_files
 echo "Done running build_me.sh..."
