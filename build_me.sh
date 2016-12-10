@@ -1,8 +1,7 @@
-#!/bin/sh
-#OS Config Bootstrap
-#Dan Sullivan
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
-#variable configuration
 export XINIT_CONFIG=~/.xinitrc-xmonad
 
 type blackbox_decrypt_all_files >/dev/null 2>&1 || \
@@ -14,9 +13,26 @@ blackbox_decrypt_all_files
 
 echo "Building OS Configuration..."
 
+provisioning_file () {
+  if [[ $# -lt 2 ]]; then
+    echo "Usage: $0 <ARG1> <ARG2>"
+    exit 1
+  fi
+  echo "provisioning file: $1, to: $2, mode: $3, owner: $4"
+  if  [ -e $2 ]; then
+    sudo rm -rf $2
+  fi
+  #create the containing directory if it doesn't exist.
+  if [ ! -d `dirname $2` ]; then 
+    mkdir -p `dirname $2`
+  fi 
+  cp `pwd`/$1 $2
+  chown $4 $2
+}
+
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     echo "Doing Arch / OS X Neutral Configurations..."
-
+    provisioning_file aws.config ~/.aws/config 400 `whoami` `id -gn`
     #if [ -e ~/.aliases-private ]; then
     #    rm -rf ~/.aliases-private
     #fi
@@ -195,11 +211,11 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     cp `pwd`/ssh_config ~/.ssh/config
    
     mkdir -p /etc/salt
-    if [ -e /etc/salt-master ]; then
-      sudo rm -rf /etc/salt/master
-    fi
-    sudo cp `pwd`/salt-master /etc/salt/master
-    sudo chmod 444 /etc/salt/master
+    #if [ -e /etc/salt-master ]; then
+    #  sudo rm -rf /etc/salt/master
+    #fi
+    #sudo cp `pwd`/salt-master /etc/salt/master
+    #sudo chmod 444 /etc/salt/master
 
     mkdir -p /etc/salt
     if [ -e /etc/salt-roster ]; then
@@ -309,12 +325,12 @@ if [[ `uname -a`  =~ ARCH ]]; then
     #sudo /etc/rc.d/iptables restart
 
     echo executing this
-    if [ -e `pwd`/hosts-private ]; then
+    if [ -e `pwd`/hosts ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts 
         fi
     fi
-    sudo cp `pwd`/hosts-private /etc/hosts
+    sudo cp `pwd`/hosts /etc/hosts
     sudo chmod 444 /etc/hosts
     
     if [ -e `pwd`/nsswitch.conf ]; then
@@ -549,20 +565,20 @@ if [[ `uname -a` =~ Darwin ]]; then
     cp `pwd`/bashrc ~/.bashrc
     #source ~/.bash_profile
     
-    if [ -e `pwd`/hosts-private ]; then
+    if [ -e `pwd`/hosts ]; then
         if [ -e /etc/hosts.ac ]; then
             sudo rm -rf /etc/hosts.ac
         fi
     fi
-    sudo cp `pwd`/hosts-private /etc/hosts.ac
+    sudo cp `pwd`/hosts /etc/hosts.ac
     sudo chmod 444 /etc/hosts.ac
     
-    if [ -e `pwd`/hosts-private ]; then
+    if [ -e `pwd`/hosts ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts
         fi
     fi
-    sudo cp `pwd`/hosts-private /etc/hosts
+    sudo cp `pwd`/hosts /etc/hosts
     sudo chmod 444 /etc/hosts
 
     if [ ! -f "~/.bash_sessions_disable" ]; then
@@ -577,7 +593,8 @@ if [[ `uname -a` =~ Darwin ]]; then
     
     IAM=`whoami`
     sudo mkdir -p /mnt/devopsrockstars-web-backup/
-    sudo chown -R $IAM /mnt/
+    sudo mkdir -p /mnt/csv-billing-dansullivan/
+    #sudo chown -R $IAM /mnt/
 
     #disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
