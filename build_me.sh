@@ -33,6 +33,8 @@ provisioning_file () {
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     echo "Doing Arch / OS X Neutral Configurations..."
     provisioning_file aws.config ~/.aws/config 400 `whoami` `id -gn`
+    provisioning_file id_rsa.pub ~/.ssh/id_rsa.pub 400 `whoami` `id -gn`
+    provisioning_file id_rsa ~/.ssh/id_rsa 400 `whoami` `id -gn`
     #if [ -e ~/.aliases-private ]; then
     #    rm -rf ~/.aliases-private
     #fi
@@ -234,6 +236,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     #Make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
+
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
@@ -607,8 +610,9 @@ if [[ `uname -a` =~ Darwin ]]; then
 
     #show all finder files
     defaults write com.apple.finder AppleShowAllFiles TRUE
-
 fi
 
 blackbox_shred_all_files
+echo "applying salt topfile..."
+sudo salt-call state.apply
 echo "Done running build_me.sh..."
