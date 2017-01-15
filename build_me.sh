@@ -225,13 +225,22 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     sudo cp `pwd`/salt-roster /etc/salt/roster
     sudo chmod 444 /etc/salt/roster
- 
+
+    #for salt call
     mkdir -p /etc/salt
     if [ -e /etc/salt-minion ]; then
       sudo rm -rf /etc/salt/minion
     fi
     sudo cp `pwd`/salt-minion /etc/salt/minion
     sudo chmod 444 /etc/salt/minion
+    
+    #for salt-ssh (master and minon should be same).
+    mkdir -p /etc/salt
+    if [ -e /etc/salt-minion ]; then
+      sudo rm -rf /etc/salt/master
+    fi
+    sudo cp `pwd`/salt-minion /etc/salt/master
+    sudo chmod 444 /etc/salt/master
 
     #Make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
@@ -614,5 +623,5 @@ fi
 
 blackbox_shred_all_files
 echo "applying salt topfile..."
-sudo salt-call state.apply
+sudo salt-call state.apply saltenv=base
 echo "Done running build_me.sh..."
