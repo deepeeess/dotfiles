@@ -604,8 +604,9 @@ if [[ `uname -a` =~ Darwin ]]; then
     chmod 600 ~/.passwd-s3fs 
     
     IAM=`whoami`
-    sudo mkdir -p /mnt/devopsrockstars-web-backup/
-    sudo mkdir -p /mnt/csv-billing-dansullivan/
+    sudo mkdir -p /mnt/devopsrockstars-web-backup
+    sudo mkdir -p /mnt/dansullivan-io-backup
+    sudo mkdir -p /mnt/billing
     #sudo chown -R $IAM /mnt/
 
     #disable press and hold, 10.10
