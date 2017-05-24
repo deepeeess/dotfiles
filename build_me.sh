@@ -212,7 +212,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     cp `pwd`/ssh_config ~/.ssh/config
    
-    mkdir -p /etc/salt
+    sudo mkdir -p /etc/salt
     #if [ -e /etc/salt-master ]; then
     #  sudo rm -rf /etc/salt/master
     #fi
@@ -245,7 +245,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     #Make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
-
+    git config --global pull.rebase true
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
@@ -620,6 +620,9 @@ if [[ `uname -a` =~ Darwin ]]; then
 
     #show all finder files
     defaults write com.apple.finder AppleShowAllFiles TRUE
+    
+    #make sure SaltStack is installed
+    brew install saltstack
 fi
 
 blackbox_shred_all_files
