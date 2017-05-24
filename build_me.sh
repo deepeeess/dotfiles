@@ -14,8 +14,8 @@ blackbox_decrypt_all_files
 echo "Building OS Configuration..."
 
 provisioning_file () {
-  if [[ $# -lt 2 ]]; then
-    echo "Usage: $0 <ARG1> <ARG2>"
+  if [[ $# -lt 5 ]]; then
+    echo "Usage: $0 <local_file> <destination_path> <permission> <owner> <group>"
     exit 1
   fi
   echo "provisioning file: $1, to: $2, mode: $3, owner: $4"
@@ -28,6 +28,8 @@ provisioning_file () {
   fi 
   cp `pwd`/$1 $2
   chown $4 $2
+  chgrp $5 $2
+  chmod $3 $2
 }
 
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
