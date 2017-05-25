@@ -622,7 +622,10 @@ if [[ `uname -a` =~ Darwin ]]; then
 
     #show all finder files
     defaults write com.apple.finder AppleShowAllFiles TRUE
-    
+   
+    #disable swipe scrolling with Chrome
+    defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
+ 
     #make sure SaltStack is installed
     brew install saltstack
 fi
