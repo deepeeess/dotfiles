@@ -632,5 +632,5 @@ fi
 
 blackbox_shred_all_files
 echo "applying salt topfile..."
-sudo salt-call state.apply saltenv=base
+#sudo salt-call state.apply saltenv=base
 echo "Done running build_me.sh..."
