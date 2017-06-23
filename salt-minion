@@ -1,0 +1,32 @@
+#/etc/salt/minion - salt-call
+#/etc/salt/master - salt & salt-ssh
+
+max_open_files: 8192
+file_client: local
+
+top_file_merging_strategy: same
+default_top: base
+
+fileserver_backend:
+  #- git
+  - roots
+
+file_roots:
+  base:
+    - /Users/dansullivan/working/github/salt-states
+    - /Users/dansullivan/working/github
+    - /Users/dansullivan/working/temp
+
+gitfs_remotes:
+  - https://github.com/dsulli99/salt-state.git
+  #- ssh://git@github.com/devopsrockstars/sunspot-solr-config.git:
+  #- https://github.com/devopsrockstars/sunspot-solr-config.git:
+  #  - mountpoint: salt://sunspot-solr-config
+  - https://github.com/s3fs-fuse/s3fs-fuse.git:
+    - mountpoint: salt://s3fs-fuse
+    #- pubkey: /Users/dansullivan/working/AWS/dps.pem.pub
+    #- privkey: /Users/dansullivan/working/AWS/dps.pem
+
+pillar_roots:
+  base:
+    - /Users/dansullivan/working/github/devopsrockstars-salt-pillar
