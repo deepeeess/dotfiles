@@ -14,8 +14,8 @@ fileserver_backend:
 file_roots:
   base:
     - /Users/dansullivan/working/github/salt-states
-    - /Users/dansullivan/working/github
-    - /Users/dansullivan/working/temp
+    #- /Users/dansullivan/working/github
+    #- /Users/dansullivan/working/temp
 
 gitfs_remotes:
   - https://github.com/dsulli99/salt-state.git
