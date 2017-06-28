@@ -235,7 +235,11 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     sudo cp `pwd`/salt-minion /etc/salt/minion
     sudo chmod 444 /etc/salt/minion
-    
+   
+    sudo chown -R `whoami` /etc/salt
+    sudo chown -R `whoami` /var/log/salt 
+    sudo chown -R `whoami` /var/cache/salt
+ 
     #for salt-ssh (master and minon should be same).
     mkdir -p /etc/salt
     if [ -e /etc/salt-minion ]; then
