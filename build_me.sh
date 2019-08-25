@@ -35,12 +35,9 @@ provisioning_file () {
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     echo "Doing Arch / OS X Neutral Configurations..."
     provisioning_file aws.config ~/.aws/config 400 `whoami` `id -gn`
+    provisioning_file aws.credentials ~/.aws/credentials 600 `whoami` `id -gn` #600 for aws-mfa
     provisioning_file id_rsa.pub ~/.ssh/id_rsa.pub 400 `whoami` `id -gn`
     provisioning_file id_rsa ~/.ssh/id_rsa 400 `whoami` `id -gn`
-    #if [ -e ~/.aliases-private ]; then
-    #    rm -rf ~/.aliases-private
-    #fi
-    #cp  `pwd`/aliases-private ~/.aliases-private
 
     if [ -e ~/.aliases ]; then
         rm -rf ~/.aliases
