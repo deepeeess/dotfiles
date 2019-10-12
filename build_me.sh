@@ -610,28 +610,26 @@ if [[ `uname -a` =~ Darwin ]]; then
     sudo mkdir -p /mnt/devopsrockstars-web-backup
     sudo mkdir -p /mnt/dansullivan-io-backup
     sudo mkdir -p /mnt/billing
-    #sudo chown -R $IAM /mnt/
+    # sudo chown -R $IAM /mnt/
 
-    #disable press and hold, 10.10
+    # disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
   
-    #disable copying colors from terminal 10.11
+    # disable copying colors from terminal 10.11
     defaults write com.apple.Terminal CopyAttributesProfile com.apple.Terminal.no-attributes
 
-    #enable locate
+    # enable locate
     sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
 
-    #show all finder files
+    # show all finder files
     defaults write com.apple.finder AppleShowAllFiles TRUE
    
-    #disable swipe scrolling with Chrome
+    # disable swipe scrolling with Chrome
     defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
- 
-    #make sure SaltStack is installed
-    #brew install saltstack
+
+    # dont show desktop icons.
+    defaults write com.apple.finder CreateDesktop false
 fi
 
 blackbox_shred_all_files
-echo "applying salt topfile..."
-#sudo salt-call state.apply saltenv=base
 echo "Done running build_me.sh..."
