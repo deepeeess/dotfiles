@@ -188,14 +188,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     cp `pwd`/bash_profile ~/.bash_profile
 
-    if [ -e `pwd`/curlrc ]; then
-        if [ -e ~/.curlrc ]; then
-            sudo rm -rf ~/.curlrc
-        fi
-    fi
-    cp `pwd`/curlrc ~/.curlrc
-    chmod 600 ~/.curlrc
-
     if [ -e `pwd`/my.cnf ]; then
         if [ -e ~/.my.cnf ]; then
             sudo rm -rf ~/.my.cnf
@@ -339,7 +331,6 @@ if [[ `uname -a`  =~ ARCH ]]; then
     sudo systemctl restart iptables
     #sudo /etc/rc.d/iptables restart
 
-    echo executing this
     if [ -e `pwd`/hosts ]; then
         if [ -e /etc/hosts ]; then
             sudo rm -rf /etc/hosts 
