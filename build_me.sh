@@ -38,7 +38,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     provisioning_file aws.credentials ~/.aws/credentials 600 `whoami` `id -gn` #600 for aws-mfa
     provisioning_file id_rsa.pub ~/.ssh/id_rsa.pub 400 `whoami` `id -gn`
     provisioning_file id_rsa ~/.ssh/id_rsa 400 `whoami` `id -gn`
-    provisioning_file zshrc ~/.zshrc 600 `whoami` `id -gn`
+    provisioning_file zshrc ~/.zshrc 700 `whoami` `id -gn`
 
     if [ -e ~/.aliases ]; then
         rm -rf ~/.aliases
