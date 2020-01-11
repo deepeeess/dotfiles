@@ -38,6 +38,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     provisioning_file aws.credentials ~/.aws/credentials 600 `whoami` `id -gn` #600 for aws-mfa
     provisioning_file id_rsa.pub ~/.ssh/id_rsa.pub 400 `whoami` `id -gn`
     provisioning_file id_rsa ~/.ssh/id_rsa 400 `whoami` `id -gn`
+    provisioning_file zshrc ~/.zshrc 600 `whoami` `id -gn`
 
     if [ -e ~/.aliases ]; then
         rm -rf ~/.aliases
@@ -59,19 +60,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         rm -rf ~/.offlineimaprc
     fi 
     cp `pwd`/offlineimaprc ~/.offlineimaprc
-    if [ -e ~/.offlineimaprc-nognome ]; then
-        rm -rf ~/.offlineimaprc-nognome
-    fi
-    cp `pwd`/offlineimaprc-nognome ~/.offlineimaprc-nognome
-    #the directories for OfflineIMAP
-    mkdir -p ~/Mail
-
-    if [ -e ~/.imapfilter ]; then
-        rm -rf ~/.imapfilter
-    fi
-    mkdir -p ~/.imapfilter/
-    cp `pwd`/imapfilter-stable.conf ~/.imapfilter/config-stable.lua
-    cp `pwd`/imapfilter-experimental.conf ~/.imapfilter/config-experimental.lua
 
     if [ -e ~/.screenrc ]; then
     rm -rf ~/.screenrc
@@ -132,13 +120,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     cp `pwd`/muttrc ~/.muttrc
     
-    #if [ -e `pwd`/fstab-private ]; then
-    #    if [ -e /etc/fstab-private ]; then
-    #        sudo rm -rf /etc/fstab
-    #    fi
-    #fi
-    #sudo cp `pwd`/fstab-private /etc/fstab
-    
     if [ -e `pwd`/npmrc ]; then
         if [ -e ~/.npmrc ]; then
             rm -rf ~/.npmrc
@@ -160,11 +141,6 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
         fi
     fi
     cp `pwd`/gemrc ~/.gemrc
-    
-    #Install misc scripts.  This should be last in this if block.
-    if [ -e ../misc_scripts/build_me.sh ]; then
-        ../misc_scripts/build_me.sh
-    fi
     
     if [ -e `pwd`/bash_logout ]; then
         if [ -e ~/.bash_logout ]; then
@@ -224,11 +200,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     fi
     sudo cp `pwd`/salt-minion /etc/salt/minion
     sudo chmod 444 /etc/salt/minion
-   
-    #sudo chown -R `whoami` /etc/salt
-    #sudo chown -R `whoami` /var/log/salt 
-    #sudo chown -R `whoami` /var/cache/salt
- 
+
     #for salt-ssh (master and minon should be same).
     mkdir -p /etc/salt
     if [ -e /etc/salt-minion ]; then
@@ -597,12 +569,6 @@ if [[ `uname -a` =~ Darwin ]]; then
     cp `pwd`/passwd-s3fs ~/.passwd-s3fs
     chmod 600 ~/.passwd-s3fs 
     
-    IAM=`whoami`
-    sudo mkdir -p /mnt/devopsrockstars-web-backup
-    sudo mkdir -p /mnt/dansullivan-io-backup
-    sudo mkdir -p /mnt/billing
-    # sudo chown -R $IAM /mnt/
-
     # disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
   
