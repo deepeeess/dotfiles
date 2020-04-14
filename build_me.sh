@@ -19,7 +19,7 @@ provisioning_file () {
     exit 1
   fi
   echo "provisioning file: $1, to: $2, mode: $3, owner: $4"
-  if  [ -e $2 ]; then
+  if  [ -f $2 ]; then
     sudo rm -rf $2
   fi
   #create the containing directory if it doesn't exist.
@@ -35,7 +35,7 @@ provisioning_file () {
 if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     echo "Doing Arch / OS X Neutral Configurations..."
     provisioning_file aws.config ~/.aws/config 400 `whoami` `id -gn`
-    provisioning_file aws.credentials ~/.aws/credentials 600 `whoami` `id -gn` #600 for aws-mfa
+    provisioning_file aws.credentials ~/.aws/credentials 600 `whoami` `id -gn`
     provisioning_file id_rsa.pub ~/.ssh/id_rsa.pub 400 `whoami` `id -gn`
     provisioning_file id_rsa ~/.ssh/id_rsa 400 `whoami` `id -gn`
     provisioning_file zshrc ~/.zshrc 700 `whoami` `id -gn`
@@ -529,6 +529,7 @@ fi
 
 if [[ `uname -a` =~ Darwin ]]; then
     echo "Doing OS X Specific Configurations..."
+    provisioning_file visual-studio-code-settings.json ~/Library/ApplicationSupport/Code/User/settings.json 600 `whoami` `id -gn`
     
     if [ -e ~/.inputrc ]; then
         rm -rf ~/.inputrc
@@ -563,12 +564,12 @@ if [[ `uname -a` =~ Darwin ]]; then
       touch ~/.bash_sessions_disable
     fi
 
-    if [ ! -f "~/.passwd-s3fs" ]; then
+    if [ -e "~/.passwd-s3fs" ]; then
         rm -rf ~/.passwd-s3fs
     fi
     cp `pwd`/passwd-s3fs ~/.passwd-s3fs
     chmod 600 ~/.passwd-s3fs 
-    
+
     # disable press and hold, 10.10
     defaults write -g ApplePressAndHoldEnabled -bool false
   
