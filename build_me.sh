@@ -214,6 +214,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     git config --global user.email "dansullivan@gmail.com"
     git config --global pull.rebase true
     git config --global pager.branch false
+    git config --global push.default current
     
 fi
 
