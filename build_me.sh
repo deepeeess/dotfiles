@@ -213,6 +213,8 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
     git config --global pull.rebase true
+    git config --global pager.branch false
+    
 fi
 
 if [[ `uname -a`  =~ ARCH ]]; then
