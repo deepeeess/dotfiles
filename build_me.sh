@@ -533,6 +533,7 @@ fi
 if [[ `uname -a` =~ Darwin ]]; then
     echo "Doing OS X Specific Configurations..."
     provisioning_file visual-studio-code-settings.json ~/Library/ApplicationSupport/Code/User/settings.json 600 `whoami` `id -gn`
+    provisioning_file pgpass ~/.pgpass 600 `whoami` `id -gn`
     
     if [ -e ~/.inputrc ]; then
         rm -rf ~/.inputrc
