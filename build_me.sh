@@ -193,7 +193,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     sudo cp `pwd`/salt-roster /etc/salt/roster
     sudo chmod 444 /etc/salt/roster
 
-    #for salt call
+    # for salt call
     mkdir -p /etc/salt
     if [ -e /etc/salt-minion ]; then
       sudo rm -rf /etc/salt/minion
@@ -201,7 +201,7 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     sudo cp `pwd`/salt-minion /etc/salt/minion
     sudo chmod 444 /etc/salt/minion
 
-    #for salt-ssh (master and minon should be same).
+    # for salt-ssh (master and minon should be same).
     mkdir -p /etc/salt
     if [ -e /etc/salt-minion ]; then
       sudo rm -rf /etc/salt/master
@@ -209,12 +209,13 @@ if [[ `uname -a`  =~ ARCH || `uname -a` =~ Darwin ]]; then
     sudo cp `pwd`/salt-minion /etc/salt/master
     sudo chmod 444 /etc/salt/master
 
-    #Make sure git is configured (for Github).
+    # make sure git is configured (for Github).
     git config --global user.name "Dan Sullivan"
     git config --global user.email "dansullivan@gmail.com"
     git config --global pull.rebase true
     git config --global pager.branch false
     git config --global push.default current
+    git config --global core.pager cat
     
 fi
 
